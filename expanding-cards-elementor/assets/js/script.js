@@ -4,6 +4,8 @@ jQuery(document).ready(function ($) {
     function closeActiveCard() {
         if (activeCard) {
             activeCard.removeClass('active');
+            const description = activeCard.find('.team-member-description');
+            description.css('height', '0');
             activeCard = null;
         }
     }
@@ -22,11 +24,13 @@ jQuery(document).ready(function ($) {
 
         // Open clicked card
         clickedCard.addClass('active');
+        const description = clickedCard.find('.team-member-description');
+        const height = description[0].scrollHeight;
+        description.css('height', height + 'px');
         activeCard = clickedCard;
 
         // Scroll into view if needed
-        if (window.innerWidth <= 1023) {
-            const description = clickedCard.find('.team-member-description');
+        if (window.innerWidth <= 1024) {
             description[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     });
@@ -43,5 +47,17 @@ jQuery(document).ready(function ($) {
         if (e.key === 'Escape') {
             closeActiveCard();
         }
+    });
+
+    // Reset card states on window resize
+    let resizeTimer;
+    $(window).on('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            if (activeCard) {
+                const description = activeCard.find('.team-member-description');
+                description.css('height', description[0].scrollHeight + 'px');
+            }
+        }, 250);
     });
 });

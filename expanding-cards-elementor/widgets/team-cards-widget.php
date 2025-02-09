@@ -29,7 +29,7 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
         $this->add_control(
             'cards_per_row',
             [
-                'label' => 'Cards per Row',
+                'label' => 'Max Cards per Row',
                 'type' => \Elementor\Controls_Manager::SELECT,
                 'default' => '4',
                 'options' => [
@@ -37,19 +37,7 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
                     '3' => '3',
                     '4' => '4',
                 ],
-            ]
-        );
-
-        $this->add_control(
-            'expanded_position',
-            [
-                'label' => 'Expanded Content Position',
-                'type' => \Elementor\Controls_Manager::SELECT,
-                'default' => 'dynamic',
-                'options' => [
-                    'dynamic' => 'Dynamic (After Current Row)',
-                    'bottom' => 'Bottom',
-                ],
+                'prefix_class' => 'max-cards-',
             ]
         );
 
@@ -131,8 +119,9 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
             [
                 'label' => 'Card Background',
                 'type' => \Elementor\Controls_Manager::COLOR,
+                'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .team-card-front' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .team-card-header' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -141,7 +130,8 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
             \Elementor\Group_Control_Border::get_type(),
             [
                 'name' => 'card_border',
-                'selector' => '{{WRAPPER}} .team-card-front',
+                'label' => 'Border',
+                'selector' => '{{WRAPPER}} .team-card-header',
             ]
         );
 
@@ -152,7 +142,7 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%'],
                 'selectors' => [
-                    '{{WRAPPER}} .team-card-front' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .team-card-header' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -164,19 +154,7 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'selectors' => [
-                    '{{WRAPPER}} .team-card-front' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'card_margin',
-            [
-                'label' => 'Margin',
-                'type' => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'selectors' => [
-                    '{{WRAPPER}} .team-card' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .team-card-header' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -242,7 +220,7 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
 
         // Typography Style Section
         $this->start_controls_section(
-            'typography_style_section',
+            'typography_section',
             [
                 'label' => 'Typography',
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
@@ -286,52 +264,6 @@ class TeamCardsWidget extends \Elementor\Widget_Base {
                 'selectors' => [
                     '{{WRAPPER}} .team-member-role' => 'color: {{VALUE}};',
                 ],
-            ]
-        );
-
-
-
-        $this->end_controls_section();
-$this->start_controls_section(
-            'text_spacing_section',
-            [
-                'label' => 'Text Spacing',
-                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_responsive_control(
-            'text_elements_margin',
-            [
-                'label' => 'All Text Elements Margin',
-                'type' => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'selectors' => [
-                    '{{WRAPPER}} .team-member-name, {{WRAPPER}} .team-member-role, {{WRAPPER}} .team-member-description' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'text_elements_padding',
-            [
-                'label' => 'All Text Elements Padding',
-                'type' => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'selectors' => [
-                    '{{WRAPPER}} .team-member-name, {{WRAPPER}} .team-member-role, {{WRAPPER}} .team-member-description' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // Description Style Section
-        $this->start_controls_section(
-            'description_style_section',
-            [
-                'label' => 'Description Style',
-                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
 
@@ -401,9 +333,9 @@ $this->start_controls_section(
     protected function render() {
         $settings = $this->get_settings_for_display();
         ?>
-        <div class="team-cards-container" data-max-cards="<?php echo esc_attr($settings['cards_per_row']); ?>">
+        <div class="team-cards-container">
             <?php foreach ($settings['team_members'] as $index => $member) : ?>
-                <div class="team-card" data-index="<?php echo esc_attr($index); ?>">
+                <div class="team-card">
                     <div class="team-card-header">
                         <?php if ($member['image']['url']) : ?>
                             <div class="team-member-image">
