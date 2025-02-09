@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Expandable Team Cards
  * Description: Creates expandable team member cards with Elementor integration
- * Version: 1.0.0
- * Author: Your Name
+ * Version: 0.3.5
+ * Author: Daniël
  */
 
 if (!defined('ABSPATH')) exit;
