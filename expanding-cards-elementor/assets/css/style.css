@@ -1,100 +1,80 @@
-.elementor-widget-team_cards .team-cards-container {
-    display: grid;
-    gap: 2rem;
-    width: 100%;
-}
+/* style.css: Styles for the Volunteer Grid Elementor widget */
 
-/* Max cards per row control */
-.elementor-widget-team_cards.max-cards-2 .team-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(calc(50% - 1rem), 1fr));
-}
-
-.elementor-widget-team_cards.max-cards-3 .team-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(calc(33.333% - 1.334rem), 1fr));
-}
-
-.elementor-widget-team_cards.max-cards-4 .team-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(calc(25% - 1.5rem), 1fr));
-}
-
-.team-card {
-    width: 100%;
-    cursor: pointer;
-}
-
-.team-card-header {
+.volunteer-grid {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: #ffffff;
-    position: relative;
-    transition: background-color 0.3s ease;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    max-width: 800px;
+    margin: 40px auto;
 }
 
-.team-member-image {
-    width: 80px;
-    height: 80px;
-    flex-shrink: 0;
-    overflow: hidden;
+.volunteer-card {
+    flex: 1 1 calc(100% - 30px);
+    max-width: 100%;
+    background: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
 }
 
-.team-member-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.team-member-info {
-    flex-grow: 1;
-}
-
-.team-member-name {
-    margin: 0;
-    font-size: 1.2rem;
-}
-
-.team-member-role {
-    margin: 0.25rem 0 0;
-    font-size: 0.9rem;
-}
-
-.expand-icon {
-    font-size: 1.2rem;
-    transition: transform 0.3s ease;
-}
-
-.team-card:hover .expand-icon {
-    transform: translateX(5px);
-}
-
-.team-card.active .expand-icon {
-    transform: rotate(90deg);
-}
-
-.team-member-description {
-    height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
-    padding: 0 1rem;
-}
-
-.team-card.active .team-member-description {
+.volunteer-card img {
+    max-width: 100%;
     height: auto;
-    opacity: 1;
-    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
-/* Responsive Styles */
-@media (max-width: 1024px) {
-    .elementor-widget-team_cards .team-cards-container {
-        grid-template-columns: repeat(auto-fit, minmax(calc(50% - 1rem), 1fr));
+.volunteer-card:hover {
+    background: #ddd;
+    transform: translateY(-2px);
+}
+
+.volunteer-card.greyed-out {
+    background: #ccc;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* The container for the description content (hidden by default) */
+.volunteer-description {
+    display: none;
+    width: 100%;
+    background: #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.volunteer-description.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scaleY(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scaleY(1);
     }
 }
 
-@media (max-width: 767px) {
-    .elementor-widget-team_cards .team-cards-container {
-        grid-template-columns: 1fr;
+/* Responsive breakpoints */
+@media (min-width: 600px) {
+    .volunteer-card {
+        flex: 1 1 calc(50% - 15px);
+        max-width: calc(50% - 15px);
+    }
+}
+
+@media (min-width: 900px) {
+    .volunteer-card {
+        flex: 1 1 calc(25% - 15px);
+        max-width: calc(25% - 15px);
     }
 }

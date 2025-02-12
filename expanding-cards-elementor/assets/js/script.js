@@ -1,63 +1,76 @@
-jQuery(document).ready(function ($) {
-    let activeCard = null;
+/* script.js: Adds dynamic expand/collapse behavior for volunteer cards */
 
-    function closeActiveCard() {
-        if (activeCard) {
-            activeCard.removeClass('active');
-            const description = activeCard.find('.team-member-description');
-            description.css('height', '0');
-            activeCard = null;
+jQuery(document).ready(function ($) {
+    let itemsPerRow = 1;
+
+    // Helper to determine items per row based on current screen size
+    function getItemsPerRow() {
+        let w = $(window).width();
+        if (w >= 900) {
+            itemsPerRow = 4; // Desktop
+        } else if (w >= 600) {
+            itemsPerRow = 2; // Tablet
+        } else {
+            itemsPerRow = 1; // Mobile
         }
     }
 
-    $('.team-card').on('click', function (e) {
-        const clickedCard = $(this);
+    // Set items per row on page load
+    getItemsPerRow();
 
-        // If clicking the same card that's already open, close it
-        if (activeCard && activeCard[0] === clickedCard[0]) {
-            closeActiveCard();
+    // Update items per row on window resize
+    $(window).on('resize', function () {
+        getItemsPerRow();
+    });
+
+    // Card click behavior
+    $('.volunteer-card').on('click', function () {
+        let volunteerCard = $(this);
+        let volunteerGrid = volunteerCard.closest('.volunteer-grid');
+        let volunteerDescription = volunteerGrid.find('.volunteer-description');
+        let alreadyOpen = volunteerDescription.hasClass('active') && volunteerCard.hasClass('active-card');
+
+        // Remove existing open states
+        $('.volunteer-card').removeClass('active-card greyed-out');
+        volunteerDescription.removeClass('active').empty().hide();
+
+        // If clicking the already open card, just close
+        if (alreadyOpen) {
             return;
         }
 
-        // Close any currently open card
-        closeActiveCard();
+        // Mark the clicked card as active
+        volunteerCard.addClass('active-card');
 
-        // Open clicked card
-        clickedCard.addClass('active');
-        const description = clickedCard.find('.team-member-description');
-        const height = description[0].scrollHeight;
-        description.css('height', height + 'px');
-        activeCard = clickedCard;
+        // Grey out other cards
+        volunteerGrid.find('.volunteer-card').not(volunteerCard).addClass('greyed-out');
 
-        // Scroll into view if needed
-        if (window.innerWidth <= 1024) {
-            description[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Insert the description box below the row
+        let cards = volunteerGrid.children('.volunteer-card');
+        let clickedIndex = cards.index(volunteerCard);
+        let rowStartIndex = Math.floor(clickedIndex / itemsPerRow) * itemsPerRow;
+        let insertIndex = rowStartIndex + itemsPerRow;
+
+        let descriptionText = volunteerCard.attr('data-description') || '';
+
+        volunteerDescription
+            .html(`\n                <button class=\"close-desc\">Close</button>\n                <div>${descriptionText}</div>\n            `)
+            .addClass('active')
+            .fadeIn(200);
+
+        // Insert the description
+        if (insertIndex >= cards.length) {
+            volunteerGrid.append(volunteerDescription);
+        } else {
+            volunteerDescription.insertBefore(cards.eq(insertIndex));
         }
-    });
 
-    // Close active card when clicking outside
-    $(document).on('click', function (e) {
-        if (!$(e.target).closest('.team-card').length) {
-            closeActiveCard();
-        }
-    });
-
-    // Handle escape key
-    $(document).on('keyup', function (e) {
-        if (e.key === 'Escape') {
-            closeActiveCard();
-        }
-    });
-
-    // Reset card states on window resize
-    let resizeTimer;
-    $(window).on('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            if (activeCard) {
-                const description = activeCard.find('.team-member-description');
-                description.css('height', description[0].scrollHeight + 'px');
-            }
-        }, 250);
+        // Close button event
+        volunteerDescription.find('.close-desc').on('click', function () {
+            volunteerDescription.removeClass('active').fadeOut(200, function () {
+                $(this).empty();
+            });
+            volunteerGrid.find('.volunteer-card').removeClass('greyed-out active-card');
+        });
     });
 });

@@ -1,40 +1,28 @@
 <?php
+
 /**
- * Plugin Name: Expandable Team Cards
- * Description: Creates expandable team member cards with Elementor integration
- * Version: 0.3.7
- * Author: Daniël
+ * Plugin Name: Elementor Volunteer Grid
+ * Description: A custom Elementor widget that displays a grid of volunteer cards with expandable descriptions.
+ * Version: 1.0.0
+ * Author: Your Name
  */
 
-if (!defined('ABSPATH')) exit;
-
-class ExpandableTeamCards {
-    public function __construct() {
-        add_action('elementor/widgets/register', [$this, 'register_widget']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
-    }
-
-    public function register_widget($widgets_manager) {
-        require_once(__DIR__ . '/widgets/team-cards-widget.php');
-        $widgets_manager->register(new \TeamCardsWidget());
-    }
-
-    public function enqueue_scripts() {
-        wp_enqueue_style(
-            'expandable-team-cards',
-            plugins_url('assets/css/style.css', __FILE__),
-            [],
-            '1.0.0'
-        );
-
-        wp_enqueue_script(
-            'expandable-team-cards',
-            plugins_url('assets/js/script.js', __FILE__),
-            ['jquery'],
-            '1.0.0',
-            true
-        );
-    }
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
 }
 
-new ExpandableTeamCards();
+// Register the custom Elementor widget
+function register_volunteer_grid_widget($widgets_manager)
+{
+    require_once plugin_dir_path(__FILE__) . '/widgets/volunteer-grid-widget.php';
+    $widgets_manager->register_widget_type(new \Elementor_Volunteer_Grid_Widget());
+}
+add_action('elementor/widgets/register', 'register_volunteer_grid_widget');
+
+// Register widget scripts and styles
+function volunteer_grid_enqueue_scripts()
+{
+    wp_enqueue_style('volunteer-grid-style', plugins_url('/assets/css/style.css', __FILE__));
+    wp_enqueue_script('volunteer-grid-script', plugins_url('/assets/js/script.js', __FILE__), array('jquery'), null, true);
+}
+add_action('wp_enqueue_scripts', 'volunteer_grid_enqueue_scripts');
