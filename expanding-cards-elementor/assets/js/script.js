@@ -28,24 +28,30 @@ jQuery(document).ready(function ($) {
         let volunteerCard = $(this);
         let volunteerGrid = volunteerCard.closest('.volunteer-grid');
         let volunteerDescription = volunteerGrid.find('.volunteer-description');
-        let alreadyOpen = volunteerDescription.hasClass('active') && volunteerCard.hasClass('active-card');
+        let descriptionIsActive = volunteerDescription.hasClass('active');
+        let oldActiveCard = volunteerGrid.find('.volunteer-card.active-card');
 
-        // Remove existing open states
-        $('.volunteer-card').removeClass('active-card greyed-out');
-        volunteerDescription.removeClass('active').empty().hide();
-
-        // If clicking the already open card, just close
-        if (alreadyOpen) {
-            return;
+        // 1) If there is an active description, remove it (reset the old state)
+        if (descriptionIsActive) {
+            volunteerDescription.removeClass('active').fadeOut(200, function () {
+                $(this).empty();
+            });
+            // Remove greyed-out & active-card from ALL cards
+            volunteerGrid.find('.volunteer-card').removeClass('greyed-out active-card');
         }
 
-        // Mark the clicked card as active
+        // 2) If the card clicked was the old active card, stop here (meaning user is re-clicking the same card, so we just close)
+        if (oldActiveCard.is(volunteerCard)) {
+            return;  // No new description to open
+        }
+
+        // 3) Set the newly clicked card as active
         volunteerCard.addClass('active-card');
 
-        // Grey out other cards
+        // 4) Grey out other cards (but keep them clickable now)
         volunteerGrid.find('.volunteer-card').not(volunteerCard).addClass('greyed-out');
 
-        // Insert the description box below the row
+        // 5) Insert the description box below the clicked card's row
         let cards = volunteerGrid.children('.volunteer-card');
         let clickedIndex = cards.index(volunteerCard);
         let rowStartIndex = Math.floor(clickedIndex / itemsPerRow) * itemsPerRow;
@@ -54,18 +60,21 @@ jQuery(document).ready(function ($) {
         let descriptionText = volunteerCard.attr('data-description') || '';
 
         volunteerDescription
-            .html(`\n                <button class=\"close-desc\">Close</button>\n                <div>${descriptionText}</div>\n            `)
-            .addClass('active')
+            .html(`
+                <button class="close-desc">Close</button>
+                <div>${descriptionText}</div>
+            `)
+            .addClass('active') // Mark it active
             .fadeIn(200);
 
-        // Insert the description
+        // Insert or append the description
         if (insertIndex >= cards.length) {
             volunteerGrid.append(volunteerDescription);
         } else {
             volunteerDescription.insertBefore(cards.eq(insertIndex));
         }
 
-        // Close button event
+        // 6) Close button event
         volunteerDescription.find('.close-desc').on('click', function () {
             volunteerDescription.removeClass('active').fadeOut(200, function () {
                 $(this).empty();

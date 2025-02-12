@@ -11,6 +11,7 @@
 
 .volunteer-card {
     flex: 1 1 calc(100% - 30px);
+    /* Default: 1 card per row (mobile) */
     max-width: 100%;
     background: #f0f0f0;
     padding: 20px;
@@ -34,7 +35,6 @@
 
 .volunteer-card.greyed-out {
     background: #ccc;
-    pointer-events: none;
     opacity: 0.6;
 }
 
