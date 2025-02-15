@@ -1,9 +1,6 @@
-/* script.js: Adds dynamic expand/collapse behavior for volunteer cards */
-
-jQuery(document).ready(function ($) {
+jQuery(document).ready(function($) {
     let itemsPerRow = 1;
 
-    // Helper to determine items per row based on current screen size
     function getItemsPerRow() {
         let w = $(window).width();
         if (w >= 900) {
@@ -15,71 +12,83 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    // Set items per row on page load
     getItemsPerRow();
+    $(window).on('resize', getItemsPerRow);
 
-    // Update items per row on window resize
-    $(window).on('resize', function () {
-        getItemsPerRow();
-    });
+    // Helper to open a specific card
+    function openCard(volunteerCard) {
+        const volunteerGrid = volunteerCard.closest('.volunteer-grid');
+        const volunteerDescription = volunteerGrid.find('.volunteer-description');
 
-    // Card click behavior
-    $('.volunteer-card').on('click', function () {
-        let volunteerCard = $(this);
-        let volunteerGrid = volunteerCard.closest('.volunteer-grid');
-        let volunteerDescription = volunteerGrid.find('.volunteer-description');
-        let descriptionIsActive = volunteerDescription.hasClass('active');
-        let oldActiveCard = volunteerGrid.find('.volunteer-card.active-card');
+        // 1) Close existing description
+        volunteerDescription.removeClass('active').fadeOut(200, function() {
+            $(this).empty();
+        });
+        // Reset other cards
+        volunteerGrid.find('.volunteer-card').removeClass('greyed-out active-card')
+            .attr('aria-expanded', 'false');
 
-        // 1) If there is an active description, remove it (reset the old state)
-        if (descriptionIsActive) {
-            volunteerDescription.removeClass('active').fadeOut(200, function () {
-                $(this).empty();
-            });
-            // Remove greyed-out & active-card from ALL cards
-            volunteerGrid.find('.volunteer-card').removeClass('greyed-out active-card');
-        }
-
-        // 2) If the card clicked was the old active card, stop here (meaning user is re-clicking the same card, so we just close)
-        if (oldActiveCard.is(volunteerCard)) {
-            return;  // No new description to open
-        }
-
-        // 3) Set the newly clicked card as active
-        volunteerCard.addClass('active-card');
-
-        // 4) Grey out other cards (but keep them clickable now)
+        // 2) Mark the new card as active
+        volunteerCard.addClass('active-card').attr('aria-expanded', 'true');
         volunteerGrid.find('.volunteer-card').not(volunteerCard).addClass('greyed-out');
 
-        // 5) Insert the description box below the clicked card's row
+        // 3) Insert the description
         let cards = volunteerGrid.children('.volunteer-card');
         let clickedIndex = cards.index(volunteerCard);
         let rowStartIndex = Math.floor(clickedIndex / itemsPerRow) * itemsPerRow;
         let insertIndex = rowStartIndex + itemsPerRow;
 
         let descriptionText = volunteerCard.attr('data-description') || '';
-
         volunteerDescription
             .html(`
-                <button class="close-desc">Close</button>
+                <button class="close-desc" aria-label="Close">&times;</button>
                 <div>${descriptionText}</div>
             `)
-            .addClass('active') // Mark it active
+            .addClass('active')
             .fadeIn(200);
 
-        // Insert or append the description
         if (insertIndex >= cards.length) {
             volunteerGrid.append(volunteerDescription);
         } else {
             volunteerDescription.insertBefore(cards.eq(insertIndex));
         }
 
-        // 6) Close button event
-        volunteerDescription.find('.close-desc').on('click', function () {
-            volunteerDescription.removeClass('active').fadeOut(200, function () {
+        // Close button
+        volunteerDescription.find('.close-desc').on('click', function() {
+            volunteerDescription.removeClass('active').fadeOut(200, function() {
                 $(this).empty();
             });
-            volunteerGrid.find('.volunteer-card').removeClass('greyed-out active-card');
+            volunteerGrid.find('.volunteer-card')
+                .removeClass('greyed-out active-card')
+                .attr('aria-expanded', 'false');
         });
+    }
+
+    // Click handler
+    $('.volunteer-card').on('click', function() {
+        let volunteerCard = $(this);
+        // If already active, close
+        if (volunteerCard.hasClass('active-card')) {
+            // Just simulate the close button
+            const volunteerGrid = volunteerCard.closest('.volunteer-grid');
+            const volunteerDescription = volunteerGrid.find('.volunteer-description');
+            volunteerDescription.removeClass('active').fadeOut(200, function() {
+                $(this).empty();
+            });
+            volunteerGrid.find('.volunteer-card')
+                .removeClass('greyed-out active-card')
+                .attr('aria-expanded', 'false');
+            return;
+        }
+        // Otherwise, open
+        openCard(volunteerCard);
+    });
+
+    // Keyboard support: Pressing Enter or Space = open/close
+    $('.volunteer-card').on('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault(); // prevent scrolling on Space
+            $(this).click();    // trigger the click handler
+        }
     });
 });

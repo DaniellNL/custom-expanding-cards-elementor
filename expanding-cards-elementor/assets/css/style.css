@@ -1,5 +1,21 @@
 /* style.css: Styles for the Volunteer Grid Elementor widget */
 
+.close-desc {
+    float: right;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;      /* Adjust size to your preference */
+    line-height: 1;
+    cursor: pointer;
+    color: #333;            /* Button text (icon) color */
+    margin-left: 10px;      /* Some spacing if needed */
+}
+
+/* Optionally, a hover state */
+.close-desc:hover {
+    color: #666;
+}
+
 .volunteer-grid {
     display: flex;
     flex-wrap: wrap;
@@ -19,6 +35,38 @@
     cursor: pointer;
     border-radius: 8px;
     transition: background 0.3s, transform 0.2s;
+    position: relative;
+}
+
+/* Base arrow hidden by default */
+.volunteer-card::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;         /* near bottom edge, adjust as desired */
+    left: 50%;
+    transform: translateX(-50%) scale(0) rotate(0deg);
+    transition: transform 0.3s ease;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #333; /* An arrow pointing down (by default) */
+    /* Could also do border-bottom for up arrow by default, but we'll just rotate. */
+}
+
+/* 1) Hovering over an inactive card -> arrow visible, pointing down */
+.volunteer-card:hover:not(.active-card)::after, .volunteer-card:focus-visible:not(.active-card)::after {
+    transform: translateX(-50%) scale(1) rotate(0deg);
+}
+
+/* 2) Card is active (opened), arrow is visible, pointing down */
+.volunteer-card.active-card::after {
+    transform: translateX(-50%) scale(1) rotate(0deg);
+}
+
+/* 3) Hover over the active card -> arrow points up (rotate 180deg) */
+.volunteer-card.active-card:hover::after, .volunteer-card.active-card:focus-visible:after {
+    transform: translateX(-50%) scale(1) rotate(180deg);
 }
 
 .volunteer-card img {
@@ -37,6 +85,17 @@
     background: #ccc;
     opacity: 0.6;
 }
+
+/* Remove focus outline by default */
+.volunteer-card:focus {
+    outline: none;
+  }
+  
+  /* Show outline only for keyboard focus */
+  .volunteer-card:focus-visible {
+    outline: 3px solid #4d90fe; /* Your desired focus style */
+    outline-offset: 2px;
+  }
 
 /* The container for the description content (hidden by default) */
 .volunteer-description {

@@ -97,16 +97,19 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
     {
         $settings = $this->get_settings_for_display();
 
+        // Unique ID for the description container
+        $desc_id = 'volunteer-desc-' . $this->get_id();
+
         echo '<div class="volunteer-grid">';
 
         if (!empty($settings['volunteers'])) {
-            foreach ($settings['volunteers'] as $volunteer) {
+            foreach ($settings['volunteers'] as $index => $volunteer) {
                 // If alt text is not set in the media, fallback to empty string
                 $alt_text = isset($volunteer['image']['alt']) ? $volunteer['image']['alt'] : '';
                 $img_url = isset($volunteer['image']['url']) ? $volunteer['image']['url'] : '';
 
                 // Volunteer card
-                echo '<div class="volunteer-card" data-description="' . esc_attr($volunteer['description']) . '">';
+                echo '<div class="volunteer-card" id="volunteer-card-' . esc_attr($index) . '" role="button" tabindex="0" aria-expanded="false" aria-controls="' . esc_attr($desc_id) . '" data-description="' . esc_attr($volunteer['description']) . '">';
 
                 // Image
                 if ($img_url) {
@@ -124,7 +127,7 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
         }
 
         // Container for dynamically loaded description
-        echo '<div class="volunteer-description"></div>';
+        echo '<div class="volunteer-description" id="' . esc_attr($desc_id) . '" role="region" aria-live="polite" ></div>';
         echo '</div>'; // .volunteer-grid
     }
 }
