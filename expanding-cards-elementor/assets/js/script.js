@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
     let itemsPerRow = 1;
 
     function getItemsPerRow() {
@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
         const volunteerDescription = volunteerGrid.find('.volunteer-description');
 
         // 1) Close existing description
-        volunteerDescription.removeClass('active').fadeOut(200, function() {
+        volunteerDescription.removeClass('active').fadeOut(200, function () {
             $(this).empty();
         });
         // Reset other cards
@@ -54,30 +54,35 @@ jQuery(document).ready(function($) {
         }
 
         // Close button
-        volunteerDescription.find('.close-desc').on('click', function() {
-            volunteerDescription.removeClass('active').fadeOut(200, function() {
+        volunteerDescription.find('.close-desc').on('click', function () {
+            volunteerDescription.removeClass('active').fadeOut(200, function () {
                 $(this).empty();
             });
             volunteerGrid.find('.volunteer-card')
                 .removeClass('greyed-out active-card')
                 .attr('aria-expanded', 'false');
+
+            //volunteerGrid.find('.volunteer-card').trigger('mouseleave');
         });
     }
 
     // Click handler
-    $('.volunteer-card').on('click', function() {
+    $('.volunteer-card').on('click', function () {
         let volunteerCard = $(this);
         // If already active, close
         if (volunteerCard.hasClass('active-card')) {
             // Just simulate the close button
             const volunteerGrid = volunteerCard.closest('.volunteer-grid');
             const volunteerDescription = volunteerGrid.find('.volunteer-description');
-            volunteerDescription.removeClass('active').fadeOut(200, function() {
+            volunteerDescription.removeClass('active').fadeOut(200, function () {
                 $(this).empty();
             });
             volunteerGrid.find('.volunteer-card')
                 .removeClass('greyed-out active-card')
-                .attr('aria-expanded', 'false');
+                .attr('aria-expanded', 'false')
+                .blur();
+
+                //volunteerGrid.find('.volunteer-card').trigger('mouseleave');
             return;
         }
         // Otherwise, open
@@ -85,7 +90,7 @@ jQuery(document).ready(function($) {
     });
 
     // Keyboard support: Pressing Enter or Space = open/close
-    $('.volunteer-card').on('keydown', function(e) {
+    $('.volunteer-card').on('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault(); // prevent scrolling on Space
             $(this).click();    // trigger the click handler

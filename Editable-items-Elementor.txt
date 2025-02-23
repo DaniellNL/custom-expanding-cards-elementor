@@ -1,0 +1,65 @@
+What should be editable in Elementor editor:
+
+General
+	Grid gap
+	Maximum number of items per row (columns), responsive
+	Volunteer role html tag
+	Volunteer name html tag
+
+
+
+Style
+Card:
+X	background color
+X		- Normal
+X		- Hover (/focus)
+X		- Active
+X		- Inactive (greyed-out)
+X	Padding
+X	Margin
+X	Shadow
+X	Border type
+X	Border size
+X	Border radius
+X	Border color
+X	Size
+x	Opacity
+x		- inactive 
+	justify
+	align items
+	minimum height
+
+Volunteer image:
+x	Image height
+x	Image Fit (cover, contain, fill, default)
+x	Image Position (center, left, middle, right)
+x	Image padding
+
+x	Normal - Hover:
+x		Image CSS filter
+x		Image scale
+x		Image Transition duration
+
+Volunteer name:
+x	Typography
+x	Color
+x	Spacing (margin-top)
+x	Text shadow
+Volunteer role:
+x	Typography
+x	Color
+x	Spacing	(margin-top)
+x	Text shadow
+
+Volunteer description:
+x	Typography
+x	Alignment
+x	Color
+x	Spacing
+x	Text shadow
+x	background color
+
+
+
+- Text align
+- content minimum height

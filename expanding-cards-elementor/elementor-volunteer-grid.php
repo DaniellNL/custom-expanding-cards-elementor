@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Elementor Volunteer Grid
  * Description: A custom Elementor widget that displays a grid of volunteer cards with expandable descriptions.
- * Version: 0.4.6
+ * Version: 0.6.0
  * Author: Daniël
  */
 
