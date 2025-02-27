@@ -92,6 +92,201 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
         );
 
         $this->end_controls_section();
+
+        $this->start_controls_section(
+            'section_layout_settings',
+            [
+                'label' => __('Layout Settings', 'plugin-name'),
+                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        /**
+         * 1) RESPONSIVE MAX COLUMNS (FLEX)
+         *
+         * We'll do a responsive slider for columns:
+         * - Desktop default: 4
+         * - Tablet default: 2
+         * - Mobile default: 1
+         */
+        $this->add_responsive_control(
+            'max_columns',
+            [
+                'label'   => __('Max Columns per Row', 'plugin-name'),
+                'type'    => \Elementor\Controls_Manager::SLIDER,
+                'devices' => ['desktop', 'tablet', 'mobile'],
+                'range'   => [
+                    'px' => [
+                        'min' => 1,
+                        'max' => 6,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'size' => 4, // e.g., 4 columns on desktop by default
+                ],
+                'tablet_default' => [
+                    'size' => 2, // columns on tablet
+                ],
+                'mobile_default' => [
+                    'size' => 1, // columns on mobile
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .volunteer-grid' => '--vol-cols: {{SIZE}};',
+                    /*'(tablet){{WRAPPER}} .volunteer-grid'  => '--vol-cols: {{SIZE}};',
+                    '(mobile){{WRAPPER}} .volunteer-grid'  => '--vol-cols: {{SIZE}};',*/
+                ],
+            ]
+        );
+
+        /**
+         * 2) RESPONSIVE GAP (FLEX GAP)
+         */
+        $this->add_responsive_control(
+            'card_gap',
+            [
+                'label'      => __('Gap Between Cards', 'plugin-name'),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', '%'],
+                'range'      => [
+                    'px' => ['min' => 0, 'max' => 100],
+                ],
+                'default' => [
+                    'size' => 15,
+                    'unit' => 'px',
+                ],
+                'tablet_default' => [
+                    'size' => 10,
+                    'unit' => 'px',
+                ],
+                'mobile_default' => [
+                    'size' => 5,
+                    'unit' => 'px',
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .volunteer-grid' => '--vol-gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        /**
+         * 3) RESPONSIVE CARD MINIMUM HEIGHT
+         */
+        $this->add_responsive_control(
+            'card_min_height',
+            [
+                'label'      => __('Card Min Height', 'plugin-name'),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', 'vh'],
+                'range'      => [
+                    'px' => ['min' => 0, 'max' => 1000],
+                    'em' => ['min' => 0, 'max' => 50],
+                    'vh' => ['min' => 0, 'max' => 100],
+                ],
+                'default' => [
+                    'size' => 0,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .volunteer-card' => 'min-height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        /**
+         * 4) VOLUNTEER ROLE HTML TAG DROPDOWN
+         */
+        $this->add_control(
+            'volunteer_role_tag',
+            [
+                'label'   => __('Volunteer Role HTML Tag', 'plugin-name'),
+                'type'    => \Elementor\Controls_Manager::SELECT,
+                'options' => [
+                    'div' => 'DIV',
+                    'span' => 'SPAN',
+                    'p'    => 'P',
+                    // etc. Add any tags you want to support
+                ],
+                'default' => 'p',
+            ]
+        );
+
+        /**
+         * 5) VOLUNTEER NAME HTML TAG DROPDOWN
+         */
+        $this->add_control(
+            'volunteer_name_tag',
+            [
+                'label'   => __('Volunteer Name HTML Tag', 'plugin-name'),
+                'type'    => \Elementor\Controls_Manager::SELECT,
+                'options' => [
+                    'h1'  => 'H1',
+                    'h2'  => 'H2',
+                    'h3'  => 'H3',
+                    'h4'  => 'H4',
+                    'h5'  => 'H5',
+                    'div' => 'DIV',
+                    'span' => 'SPAN',
+                    // etc.
+                ],
+                'default' => 'h3',
+            ]
+        );
+
+        $this->end_controls_section(); // End Layout Settings
+
+        $this->start_controls_section(
+            'section_card_layout',
+            [
+                'label' => __('Card Layout', 'plugin-name'),
+                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'vertical_alignment',
+            [
+                'label'   => __('Vertical Alignment (Text)', 'plugin-name'),
+                'type'    => \Elementor\Controls_Manager::CHOOSE,
+                'options' => [
+                    'flex-start' => [
+                        'title' => __('Top', 'plugin-name'),
+                        'icon'  => 'eicon-align-start-v',
+                    ],
+                    'center' => [
+                        'title' => __('Center', 'plugin-name'),
+                        'icon'  => 'eicon-align-center-v',
+                    ],
+                    'flex-end' => [
+                        'title' => __('Bottom', 'plugin-name'),
+                        'icon'  => 'eicon-align-end-v',
+                    ],
+                    'space-between' => [
+                        'title' => __('Space between', 'plugin name'),
+                        'icon'  => 'eicon-justify-space-between-v',
+
+                    ],
+                    'stretch' => [
+                        'title' => __('Stretch', 'plugin name'),
+                        'icon'  => 'eicon-align-stretch-v',
+
+                    ]
+                ],
+                'default' => 'flex-start',
+                'selectors' => [
+                    /*
+                      We apply it to .volunteer-body
+                      so only the text is realigned, 
+                      and the image stays at the top in .volunteer-image-wrapper.
+                    */
+                    '{{WRAPPER}} .volunteer-body' => 'justify-content: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+
         #endregion
         #region style tab
 
@@ -593,7 +788,7 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
                     '%'  => ['min' => 0, 'max' => 100],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .volunteer-image-wrapper img' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .volunteer-image-wrapper' => 'height: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -1005,8 +1200,8 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
         );
 
         $this->start_controls_tabs('tabs_description_state');
-        
-         // NORMAL TAB
+
+        // NORMAL TAB
         $this->start_controls_tab(
             'tab_description_normal',
             ['label' => __('Normal', 'plugin-name')]
@@ -1063,18 +1258,18 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
         );
 
         // Close Color
-                $this->add_control(
-                    'description_close_color_normal',
-                    [
-                        'label'     => __('Close Button Color', 'plugin-name'),
-                        'type'      => \Elementor\Controls_Manager::COLOR,
-                        'default'   => '#333333',
-                        'selectors' => [
-                            '{{WRAPPER}} .close-desc' => 'color: {{VALUE}};',
-                        ],
-                    ]
-                );
-        
+        $this->add_control(
+            'description_close_color_normal',
+            [
+                'label'     => __('Close Button Color', 'plugin-name'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#333333',
+                'selectors' => [
+                    '{{WRAPPER}} .close-desc' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
 
         // Spacing (Padding)
         $this->add_responsive_control(
@@ -1176,18 +1371,18 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
             ['label' => __('Hover', 'plugin-name')]
         );
 
-                // Close hover Color
-                $this->add_control(
-                    'description_close_color_hover',
-                    [
-                        'label'     => __('Close Button Color (hover)', 'plugin-name'),
-                        'type'      => \Elementor\Controls_Manager::COLOR,
-                        'default'   => '#000000',
-                        'selectors' => [
-                            '{{WRAPPER}} .close-desc:hover' => 'color: {{VALUE}};',
-                        ],
-                    ]
-                );
+        // Close hover Color
+        $this->add_control(
+            'description_close_color_hover',
+            [
+                'label'     => __('Close Button Color (hover)', 'plugin-name'),
+                'type'      => \Elementor\Controls_Manager::COLOR,
+                'default'   => '#000000',
+                'selectors' => [
+                    '{{WRAPPER}} .close-desc:hover' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
 
         $this->end_controls_tab(); // End of Hover tab
 
@@ -1216,6 +1411,8 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
                 // If alt text is not set in the media, fallback to empty string
                 $alt_text = isset($volunteer['image']['alt']) ? $volunteer['image']['alt'] : '';
                 $img_url = isset($volunteer['image']['url']) ? $volunteer['image']['url'] : '';
+                $role_tag = $settings['volunteer_role_tag'];
+                $name_tag = $settings['volunteer_name_tag'];
 
                 // Volunteer card
                 echo '<div class="volunteer-card" id="volunteer-card-' . esc_attr($index) . '" role="button" tabindex="0" aria-expanded="false" aria-controls="' . esc_attr($desc_id) . '" data-description="' . esc_attr($volunteer['description']) . '">';
@@ -1226,12 +1423,17 @@ class Elementor_Volunteer_Grid_Widget extends \Elementor\Widget_Base
                 }
                 echo '</div>'; // .volunteer-image-wrapper
 
+                echo '<div class="volunteer-body">';
                 // Name
-                echo '<h3>' . esc_html($volunteer['name']) . '</h3>';
+                echo '<' . esc_html($name_tag) . '>';
+                echo esc_html($volunteer['name']);
+                echo '</' . esc_html($name_tag) . '>';
 
                 // Role
-                echo '<p class="volunteer-role">' . esc_html($volunteer['role']) . '</p>';
-
+                echo '<' . esc_html($role_tag) . ' class="volunteer-role">';
+                echo esc_html($volunteer['role']);
+                echo '</' . esc_html($role_tag) . '>';
+                echo '</div>';
                 echo '</div>'; // .volunteer-card
             }
         }

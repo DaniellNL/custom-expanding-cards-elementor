@@ -1,24 +1,34 @@
 jQuery(document).ready(function ($) {
-    let itemsPerRow = 1;
+
+    function getActiveColumns(gridElem) {
+        const style = window.getComputedStyle(gridElem[0]);
+        // parseInt the custom property
+        let colVal = parseInt(style.getPropertyValue('--vol-cols'), 10);
+        if (isNaN(colVal) || colVal < 1) colVal = 1;
+        return colVal;
+    }
+
+    /* let itemsPerRow = 1;
 
     function getItemsPerRow() {
         let w = $(window).width();
-        if (w >= 900) {
+        if (w >= 1025) {
             itemsPerRow = 4; // Desktop
-        } else if (w >= 600) {
+        } else if (w >= 768) {
             itemsPerRow = 2; // Tablet
         } else {
             itemsPerRow = 1; // Mobile
         }
-    }
+    } */
 
-    getItemsPerRow();
-    $(window).on('resize', getItemsPerRow);
+    //getItemsPerRow();
+    //$(window).on('resize', getActiveColumns);
 
     // Helper to open a specific card
     function openCard(volunteerCard) {
         const volunteerGrid = volunteerCard.closest('.volunteer-grid');
         const volunteerDescription = volunteerGrid.find('.volunteer-description');
+
 
         // 1) Close existing description
         volunteerDescription.removeClass('active').fadeOut(200, function () {
@@ -26,7 +36,9 @@ jQuery(document).ready(function ($) {
         });
         // Reset other cards
         volunteerGrid.find('.volunteer-card').removeClass('greyed-out active-card')
-            .attr('aria-expanded', 'false');
+            .attr('aria-expanded', 'false')
+            .blur();
+
 
         // 2) Mark the new card as active
         volunteerCard.addClass('active-card').attr('aria-expanded', 'true');
@@ -35,10 +47,14 @@ jQuery(document).ready(function ($) {
         // 3) Insert the description
         let cards = volunteerGrid.children('.volunteer-card');
         let clickedIndex = cards.index(volunteerCard);
-        let rowStartIndex = Math.floor(clickedIndex / itemsPerRow) * itemsPerRow;
-        let insertIndex = rowStartIndex + itemsPerRow;
+
+        //Get columns from CSS variable
+        let columns = getActiveColumns(volunteerGrid);
+        let rowStartIndex = Math.floor(clickedIndex / columns) * columns;
+        let insertIndex = rowStartIndex + columns;
 
         let descriptionText = volunteerCard.attr('data-description') || '';
+
         volunteerDescription
             .html(`
                 <button class="close-desc" aria-label="Close">&times;</button>
@@ -60,7 +76,8 @@ jQuery(document).ready(function ($) {
             });
             volunteerGrid.find('.volunteer-card')
                 .removeClass('greyed-out active-card')
-                .attr('aria-expanded', 'false');
+                .attr('aria-expanded', 'false')
+                .blur();
 
             //volunteerGrid.find('.volunteer-card').trigger('mouseleave');
         });
@@ -82,7 +99,7 @@ jQuery(document).ready(function ($) {
                 .attr('aria-expanded', 'false')
                 .blur();
 
-                //volunteerGrid.find('.volunteer-card').trigger('mouseleave');
+            //volunteerGrid.find('.volunteer-card').trigger('mouseleave');
             return;
         }
         // Otherwise, open

@@ -4,11 +4,14 @@
     float: right;
     background: transparent;
     border: none;
-    font-size: 1.5rem;      /* Adjust size to your preference */
+    font-size: 1.5rem;
+    /* Adjust size to your preference */
     line-height: 1;
     cursor: pointer;
-    color: #333;            /* Button text (icon) color */
-    margin-left: 10px;      /* Some spacing if needed */
+    color: #333;
+    /* Button text (icon) color */
+    margin-left: 10px;
+    /* Some spacing if needed */
 }
 
 /* Optionally, a hover state */
@@ -19,18 +22,27 @@
 .volunteer-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    --vol-cols: 4;
+    --vol-gap: 15px;
+    gap: var(--vol-gap);
     justify-content: center;
     /* max-width: 800px; */
-    margin: 40px auto;
+    margin: 1rem auto;
 }
 
 .volunteer-card {
-    flex: 1 1 calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    /* calc(100% / var(--vol-cols)) */
+    box-sizing: border-box;
     /* Default: 1 card per row (mobile) */
-    max-width: 100%;
+    min-width: 0;
+
+    width: calc((100% - ((var(--vol-cols) - 1) * var(--vol-gap))) / var(--vol-cols));
+
     background: #f0f0f0;
-    overflow:hidden;
+    overflow: hidden;
     padding: 20px;
     text-align: center;
     cursor: pointer;
@@ -43,7 +55,8 @@
 .volunteer-card::after {
     content: '';
     position: absolute;
-    bottom: 10px;         /* near bottom edge, adjust as desired */
+    bottom: 10px;
+    /* near bottom edge, adjust as desired */
     left: 50%;
     transform: translateX(-50%) scale(0) rotate(0deg);
     transition: transform 0.3s ease;
@@ -51,12 +64,23 @@
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 10px solid #333; /* An arrow pointing down (by default) */
+    border-top: 10px solid #333;
+    /* An arrow pointing down (by default) */
     /* Could also do border-bottom for up arrow by default, but we'll just rotate. */
 }
 
+.volunteer-body {
+    /* This is where we align the text vertically. */
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    /* so it can grow to fill leftover space, 
+       letting text shift to center/bottom if needed */
+}
+
 /* 1) Hovering over an inactive card -> arrow visible, pointing down */
-.volunteer-card:hover:not(.active-card)::after, .volunteer-card:focus-visible:not(.active-card)::after {
+.volunteer-card:hover:not(.active-card)::after,
+.volunteer-card:focus-visible:not(.active-card)::after {
     transform: translateX(-50%) scale(1) rotate(0deg);
 }
 
@@ -66,35 +90,45 @@
 }
 
 /* 3) Hover over the active card -> arrow points up (rotate 180deg) */
-.volunteer-card.active-card:hover::after, .volunteer-card.active-card:focus-visible:after {
+.volunteer-card.active-card:hover::after,
+.volunteer-card.active-card:focus-visible:after {
     transform: translateX(-50%) scale(1) rotate(180deg);
 }
 
 .volunteer-image-wrapper {
     position: relative;
-    overflow: hidden; /* Ensures the scaled image doesn’t overflow */
-    margin: 0 auto;   /* If you want it centered horizontally */
-    padding: 0 0 10px 0; /* Only bottom spacing by default */
-    width: 100%; /* or a fixed width if you prefer */
+    overflow: hidden;
+    /* Ensures the scaled image doesn’t overflow */
+    margin: 0 auto;
+    /* If you want it centered horizontally */
+    padding: 0 0 10px 0;
+    /* Only bottom spacing by default */
+    width: 100%;
+    /* or a fixed width if you prefer */
     height: 200px;
     border-radius: 12px 12px 0 0;
-  }
-  
-  .volunteer-image-wrapper img {
+    flex: 0 0 auto;
+}
+
+.volunteer-card .volunteer-image-wrapper img {
     position: absolute;
     top: 0;
     left: 0;
     display: block;
-    width: 100%; /* or auto, depending on your preference */
-    height: 100%; /* We’ll handle custom height in Elementor if needed */
-    object-fit: cover; /* default; can override in Elementor */
-    object-position: center center; /* default center */
+    width: 100%;
+    /* or auto, depending on your preference */
+    height: 100%;
+    /* We’ll handle custom height in Elementor if needed */
+    object-fit: cover;
+    /* default; can override in Elementor */
+    object-position: center center;
+    /* default center */
     border-radius: 12px 12px 0 0;
-  }
+}
 
-  .volunteer-card:hover .volunteer-image-wrapper img {
+.volunteer-card:hover .volunteer-image-wrapper img {
     transform: scale(1.2);
-  }
+}
 
 .volunteer-card:hover {
     background: #ddd;
@@ -115,13 +149,14 @@
 /* Remove focus outline by default */
 .volunteer-card:focus {
     outline: none;
-  }
-  
-  /* Show outline only for keyboard focus */
-  .volunteer-card:focus-visible {
-    outline: 3px solid #4d90fe; /* Your desired focus style */
+}
+
+/* Show outline only for keyboard focus */
+.volunteer-card:focus-visible {
+    outline: 3px solid #4d90fe;
+    /* Your desired focus style */
     outline-offset: 2px;
-  }
+}
 
 /* The container for the description content (hidden by default) */
 .volunteer-description {
@@ -137,6 +172,8 @@
     display: block;
 }
 
+
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -146,20 +183,5 @@
     to {
         opacity: 1;
         transform: scaleY(1);
-    }
-}
-
-/* Responsive breakpoints */
-@media (min-width: 600px) {
-    .volunteer-card {
-        flex: 1 1 calc(50% - 15px);
-        max-width: calc(50% - 15px);
-    }
-}
-
-@media (min-width: 900px) {
-    .volunteer-card {
-        flex: 1 1 calc(25% - 15px);
-        max-width: calc(25% - 15px);
     }
 }
